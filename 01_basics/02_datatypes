@@ -9,3 +9,16 @@ console.log(3+3);
 
 //Reference (Non primitive)
 // Array , objects , Functions
+
+
+
+
+
+//Stack(Primitive) //heap (Non-Primitive)//Memories
+
+let myname = "rachit"
+
+let name = myname
+name = "mukul"
+
+console.log(name);
