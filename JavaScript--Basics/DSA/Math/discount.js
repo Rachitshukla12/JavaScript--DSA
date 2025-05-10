@@ -1,4 +1,4 @@
-let Price =10000
+let Price =Number(prompt("Enter the price of the item:"));
 let dis =0;
 
 
