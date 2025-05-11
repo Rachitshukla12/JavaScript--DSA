@@ -1,0 +1,28 @@
+.parent {
+    background-color: blue;
+    position: absolute;
+    display: flex;
+
+}
+
+.child {
+    
+    position: relative;
+    width: 100vh;
+    background-color: yellow;
+    width: 200px;
+    height: 200px;
+    margin: 50px;
+    border-radius: 20%;
+    position: relative;
+    text-align: center;
+    transform: rotate(395deg);
+    transition: transform 1s ;
+    transform-origin: center;
+    cursor: pointer;
+    font-size: 30px;
+    line-height: 200px;
+    color: brown;
+  
+    
+}
