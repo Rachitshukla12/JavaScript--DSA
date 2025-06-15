@@ -5,7 +5,7 @@
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(4, 1fr);
     grid-gap: 8px;
-    background-color: black;
+    background-color: rgb(214, 12, 12);
     height: 100vh;
     
 }
@@ -18,7 +18,7 @@ grid-row-start: 1;
 display: inline;
 justify-items: center;
 align-items: center;
-background-color: black;
+background-color: rgb(241, 7, 7);
 color: beige;
 padding-top:25px;
 }
@@ -36,7 +36,7 @@ grid-row-start: 2;
 height:300px;
 padding-left: 45%;
 padding-top: 45px;
-background-color: black;
+background-color: rgb(27, 201, 178);
 }
 
 #div4 {

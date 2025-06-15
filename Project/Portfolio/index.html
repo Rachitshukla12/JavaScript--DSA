@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Personal Portfolio - Dark Theme</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Material Icons -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <style>
+    /* Custom Tailwind config overrides */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #0f172a 0%, #020617 100%);
+      color: #e0e7ff;
+      min-height: 100vh;
+    }
+    /* Glassmorphism for cards */
+    .glass {
+      background: rgba(15, 23, 42, 0.75);
+      -webkit-backdrop-filter: saturate(180%) blur(12px);
+      backdrop-filter: saturate(180%) blur(12px);
+      border-radius: 1rem;
+      border: 1px solid rgba(147, 197, 253, 0.2);
+    }
+    /* Gradient text for highlights */
+    .gradient-text {
+      background: linear-gradient(90deg, #6366f1, #06b6d4);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    /* Skill button active state */
+    button.skill-btn.active {
+      background: #6366f1;
+      color: white;
+      box-shadow: 0 0 12px #6366f1aa;
+      transform: scale(1.05);
+    }
+    button.skill-btn {
+      transition: all 0.3s ease;
+    }
+    /* Smooth fade in/out for skill detail */
+    .fade-enter {
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+    .fade-enter-active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .fade-exit {
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+    .fade-exit-active {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    /* Responsive max widths */
+    .max-w-section {
+      max-width: 900px;
+    }
+    /* Modal styles */
+    .modal-overlay {
+      background: rgba(0, 0, 0, 0.75);
+      position: fixed;
+      inset: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .modal-overlay.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .modal {
+      background: rgba(15, 23, 42, 0.95);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      backdrop-filter: saturate(180%) blur(20px);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      width: 320px;
+      max-width: 95vw;
+      box-shadow: 0 8px 24px rgba(100, 100, 255, 0.4);
+      display: flex;
+      flex-direction: column;
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #a5b4fc;
+      font-weight: 600;
+      font-size: 1.25rem;
+      margin-bottom: 1rem;
+    }
+    .modal-close-button {
+      background: transparent;
+      border: none;
+      color: #8b89fb; 
+      font-size: 1.8rem;
+      cursor: pointer;
+      transition: color 0.2s ease;
+    }
+    .modal-close-button:hover,
+    .modal-close-button:focus {
+      color: #6366f1;
+      outline: none;
+    }
+    /* Calculator display */
+    .calc-display {
+      background-color: #1e293b;
+      color: #e0e7ff;
+      font-size: 2rem;
+      padding: 0.75rem 1rem;
+      border-radius: 0.5rem;
+      margin-bottom: 1rem;
+      text-align: right;
+      font-family: 'Courier New', monospace;
+      -webkit-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      min-height: 48px;
+      overflow-x: auto;
+    }
+    /* Calculator buttons grid */
+    .calc-buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.5rem;
+    }
+    .calc-button {
+      padding: 1rem;
+      font-size: 1.25rem;
+      font-weight: 600;
+      border-radius: 0.6rem;
+      background: #4f46e5;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: background 0.25s ease, box-shadow 0.25s ease;
+      user-select: none;
+      box-shadow: 0 3px 6px rgba(79,70,229,0.6);
+    }
+    .calc-button.operator {
+      background: #2563eb;
+      box-shadow: 0 3px 6px rgba(37,99,235,0.7);
+    }
+    .calc-button.equal {
+      background: #14b8a6;
+      box-shadow: 0 3px 8px rgba(20,184,166,0.8);
+      grid-column: span 2;
+    }
+    .calc-button.clear {
+      background: #ef4444;
+      box-shadow: 0 3px 8px rgba(239,68,68,0.8);
+    }
+    .calc-button:hover, 
+    .calc-button:focus {
+      background: #6366f1;
+      outline: none;
+      box-shadow: 0 7px 14px rgba(99,102,241,0.9);
+    }
+    .calc-button:active {
+      transform: translateY(1px);
+      box-shadow: 0 3px 6px rgba(79,70,229,0.6);
+    }
+    /* Responsive tweaks */
+    @media (max-width: 400px){
+      .modal {
+        width: 280px;
+      }
+    }
+  </style>
+</head>
+<body class="flex flex-col min-h-screen">
+  <!-- Header -->
+  <header class="sticky top-0 z-50 bg-gradient-to-r from-indigo-900 via-slate-900 to-slate-950 shadow-lg glass p-4">
+    <nav class="container mx-auto flex items-center justify-between" aria-label="Primary navigation">
+      <a href="#intro" class="text-3xl font-extrabold gradient-text">MyPortfolio</a>
+      <ul class="hidden md:flex gap-12 text-lg font-semibold">
+        <li><a href="#intro" class="hover:text-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-400 rounded">Introduction</a></li>
+        <li><a href="#skills" class="hover:text-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-400 rounded">Skills</a></li>
+        <li><a href="#projects" class="hover:text-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-400 rounded">Projects</a></li>
+        <li><a href="#contact" class="hover:text-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-400 rounded">Contact</a></li>
+      </ul>
+      <button id="mobile-menu-toggle" aria-label="Toggle menu" aria-expanded="false" class="md:hidden text-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-400 rounded">
+        <span class="material-icons text-3xl">menu</span>
+      </button>
+    </nav>
+    <!-- Mobile menu -->
+    <nav id="mobile-menu" class="hidden flex-col bg-gradient-to-r from-indigo-900 via-slate-900 to-slate-950 p-4 gap-6 md:hidden">
+      <a href="#intro" class="block text-lg font-semibold hover:text-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-400 rounded" onclick="toggleMobileMenu()">Introduction</a>
+      <a href="#skills" class="block text-lg font-semibold hover:text-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-400 rounded" onclick="toggleMobileMenu()">Skills</a>
+      <a href="#projects" class="block text-lg font-semibold hover:text-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-400 rounded" onclick="toggleMobileMenu()">Projects</a>
+      <a href="#contact" class="block text-lg font-semibold hover:text-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-400 rounded" onclick="toggleMobileMenu()">Contact</a>
+    </nav>
+  </header>
+
+  <main class="flex-grow container mx-auto px-6 py-12 space-y-20">
+    <!-- Introduction -->
+    <section id="intro" class="max-w-section mx-auto text-center" tabindex="0" aria-label="Introduction section">
+    <h1 class="text-5xl font-extrabold mb-6 gradient-text animate-move-name" id="animated-name">Welcome! I'm Rachit Shukla.</h1>
+    <style>
+    @keyframes newsTicker {
+      0% {
+        transform: translateX(100%);
+        opacity: 0.7;
+      }
+      10% {
+        opacity: 1;
+      }
+      90% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateX(-100%);
+        opacity: 0.7;
+      }
+    }
+    .animate-move-name {
+      animation: newsTicker 7s linear infinite;
+      white-space: nowrap;
+      display: inline-block;
+      will-change: transform, opacity;
+    }
+    </style>
+      <p class="text-lg max-w-xl mx-auto text-indigo-300 mb-8">I'm a passionate web developer specializing in modern, responsive, and accessible websites and applications. I love turning ideas into beautiful, interactive digital experiences.</p>
+      <img src="portfolio.jpg" alt="Profile photo of Rachit Shukla, a smiling young woman with modern hairstyle and casual outfit in a professional setting" class="mx-auto rounded-lg shadow-lg" />
+    </section>
+
+    <!-- Skills -->
+    <section id="skills" class="max-w-section mx-auto" tabindex="0" aria-label="Skills section">
+      <h2 class="text-4xl font-extrabold mb-10 gradient-text text-center">Programming Skills</h2>
+      <div class="flex flex-wrap justify-center gap-6 mb-12" role="tablist" aria-label="Programming skill selection">
+        <button class="skill-btn glass px-6 py-3 rounded-lg font-semibold text-indigo-100 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400" role="tab" aria-selected="true" id="skill-btn-js" aria-controls="skill-detail-js" tabindex="0">JavaScript</button>
+        <button class="skill-btn glass px-6 py-3 rounded-lg font-semibold text-indigo-100 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400" role="tab" aria-selected="false" id="skill-btn-python" aria-controls="skill-detail-python" tabindex="-1">Python</button>
+        <button class="skill-btn glass px-6 py-3 rounded-lg font-semibold text-indigo-100 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400" role="tab" aria-selected="false" id="skill-btn-htmlcss" aria-controls="skill-detail-htmlcss" tabindex="-1">HTML & CSS</button>
+        <button class="skill-btn glass px-6 py-3 rounded-lg font-semibold text-indigo-100 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400" role="tab" aria-selected="false" id="skill-btn-react" aria-controls="skill-detail-react" tabindex="-1">React</button>
+        <button class="skill-btn glass px-6 py-3 rounded-lg font-semibold text-indigo-100 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400" role="tab" aria-selected="false" id="skill-btn-node" aria-controls="skill-detail-node" tabindex="-1">Node.js</button>
+      </div>
+      <div>
+        <article id="skill-detail-js" role="tabpanel" tabindex="0" aria-labelledby="skill-btn-js" class="glass p-8 rounded-lg focus:outline-none">
+          <h3 class="text-2xl font-bold mb-4 gradient-text">JavaScript</h3>
+          <p>Expertise in ES6+, asynchronous programming, DOM manipulation, event handling, and building dynamic web apps.</p>
+          <ul class="list-disc list-inside mt-4 text-indigo-300">
+            <li>Vanilla JavaScript & ES6+ features</li>
+            <li>Promises, async/await, and fetch API</li>
+            <li>Event-driven programming and custom events</li>
+            <li>Client-side data validation and UX enhancements</li>
+          </ul>
+        </article>
+        <article id="skill-detail-python" role="tabpanel" tabindex="0" aria-labelledby="skill-btn-python" class="hidden glass p-8 rounded-lg focus:outline-none">
+          <h3 class="text-2xl font-bold mb-4 gradient-text">Python</h3>
+          <p>Experience with Python for scripting, automation, and backend development using frameworks like Django and Flask.</p>
+          <ul class="list-disc list-inside mt-4 text-indigo-300">
+            <li>Writing clean, maintainable Python scripts</li>
+            <li>Building REST APIs with Django REST framework</li>
+            <li>Data processing and automation tasks</li>
+            <li>Integration with databases and third-party APIs</li>
+          </ul>
+        </article>
+        <article id="skill-detail-htmlcss" role="tabpanel" tabindex="0" aria-labelledby="skill-btn-htmlcss" class="hidden glass p-8 rounded-lg focus:outline-none">
+          <h3 class="text-2xl font-bold mb-4 gradient-text">HTML & CSS</h3>
+          <p>Strong foundation in semantic HTML5 and modern CSS including Flexbox, Grid, animations, and responsive design.</p>
+          <ul class="list-disc list-inside mt-4 text-indigo-300">
+            <li>Accessible semantic markup</li>
+            <li>CSS Grid & Flexbox layouts</li>
+            <li>Animations and transitions</li>
+            <li>Mobile-first and responsive techniques</li>
+          </ul>
+        </article>
+        <article id="skill-detail-react" role="tabpanel" tabindex="0" aria-labelledby="skill-btn-react" class="hidden glass p-8 rounded-lg focus:outline-none">
+          <h3 class="text-2xl font-bold mb-4 gradient-text">React</h3>
+          <p>Building interactive UI components with React hooks, state management, and performance optimizations.</p>
+          <ul class="list-disc list-inside mt-4 text-indigo-300">
+            <li>React functional components & hooks</li>
+            <li>State management with Context API and Redux</li>
+            <li>Component lifecycle and effects</li>
+            <li>React Router for SPA navigation</li>
+          </ul>
+        </article>
+        <article id="skill-detail-node" role="tabpanel" tabindex="0" aria-labelledby="skill-btn-node" class="hidden glass p-8 rounded-lg focus:outline-none">
+          <h3 class="text-2xl font-bold mb-4 gradient-text">Node.js</h3>
+          <p>Server-side development with Node.js, Express.js, handling RESTful APIs, and real-time applications.</p>
+          <ul class="list-disc list-inside mt-4 text-indigo-300">
+            <li>Building REST APIs with Express</li>
+            <li>Working with databases (MongoDB, PostgreSQL)</li>
+            <li>WebSocket and real-time data processing</li>
+            <li>Security best practices and error handling</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+    <!-- Projects -->
+    <section id="projects" class="max-w-section mx-auto" aria-label="Projects section" tabindex="0">
+      <h2 class="text-4xl font-extrabold mb-10 gradient-text text-center">Projects</h2>
+      <div class="grid md:grid-cols-2 gap-8">
+        <!-- Project 1 Card -->
+        <article class="glass p-6 rounded-lg flex flex-col">
+          <h3 class="text-2xl font-bold gradient-text mb-2">Calculator</h3>
+          <div class="w-full h-48 mb-4 bg-slate-800 border border-indigo-900">
+            <img src="calcu.avif" alt="Calculator project preview" class="w-full h-full object-fit: cover; rounded" />
+          </div>
+          <p class="text-indigo-200 mb-4">A simple and modern calculator web app built with HTML, CSS, and JavaScript.</p>
+          <a href="project1.html" target="_blank" rel="noopener" class="mt-auto inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-2 rounded-lg transition focus:outline-none focus:ring-2 focus:ring-indigo-400">
+            Use calculator
+          </a>
+        </article>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" class="max-w-section mx-auto" aria-label="Contact section" tabindex="0">
+      <h2 class="text-4xl font-extrabold mb-10 gradient-text text-center">Get In Touch</h2>
+      <form class="glass p-8 rounded-lg max-w-lg mx-auto space-y-6" aria-label="Contact form">
+        <div>
+          <label for="name" class="block mb-2 font-semibold">Name</label>
+          <input type="text" id="name" name="name" required class="w-full rounded-md p-3 bg-indigo-900 text-indigo-100 border border-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400" />
+        </div>
+        <div>
+          <label for="email" class="block mb-2 font-semibold">Email</label>
+          <input type="email" id="email" name="email" required class="w-full rounded-md p-3 bg-indigo-900 text-indigo-100 border border-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400" />
+        </div>
+        <div>
+          <label for="message" class="block mb-2 font-semibold">Message</label>
+          <textarea id="message" name="message" rows="5" required class="w-full rounded-md p-3 bg-indigo-900 text-indigo-100 border border-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400"></textarea>
+        </div>
+        <button type="submit" class="btn-submit bg-indigo-600 hover:bg-indigo-700 focus:ring-4 focus:ring-indigo-400 text-white py-3 px-8 rounded-lg font-semibold w-full transition">
+          Send Message
+        </button>
+      </form>
+    </section>
+  </main>
+
+  <footer class="bg-gradient-to-r from-indigo-900 via-slate-900 to-slate-950 text-indigo-300 p-6 text-center text-sm">
+    © 2024 Jane Doe. All rights reserved.
+  </footer>
+
+  <script>
+    // Mobile menu toggle
+    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    function toggleMobileMenu() {
+      const isExpanded = mobileMenuToggle.getAttribute('aria-expanded') === 'true';
+      mobileMenuToggle.setAttribute('aria-expanded', !isExpanded);
+      mobileMenu.classList.toggle('hidden');
+    }
+
+    mobileMenuToggle.addEventListener('click', toggleMobileMenu);
+
+    // Skills button logic: show/hide skill details
+    const skillButtons = document.querySelectorAll('button.skill-btn');
+    const skillDetails = document.querySelectorAll('article[role="tabpanel"]');
+
+    function setActiveSkill(button) {
+      // Remove active from all buttons and hide all details
+      skillButtons.forEach(btn => {
+        btn.classList.remove('active');
+        btn.setAttribute('aria-selected', 'false');
+        btn.tabIndex = -1;
+      });
+      skillDetails.forEach(detail => {
+        detail.classList.add('hidden');
+        detail.setAttribute('aria-hidden', 'true');
+      });
+      // Activate clicked button
+      button.classList.add('active');
+      button.setAttribute('aria-selected', 'true');
+      button.tabIndex = 0;
+      const detailId = button.getAttribute('aria-controls');
+      const activeDetail = document.getElementById(detailId);
+      activeDetail.classList.remove('hidden');
+      activeDetail.setAttribute('aria-hidden', 'false');
+      activeDetail.focus();
+    }
+    skillButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        setActiveSkill(btn);
+      });
+      btn.addEventListener('keydown', e => {
+        // Keyboard navigation with arrow keys
+        let idx = Array.from(skillButtons).indexOf(e.target);
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+          e.preventDefault();
+          let nextIdx = (idx + 1) % skillButtons.length;
+          skillButtons[nextIdx].focus();
+        } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+          e.preventDefault();
+          let prevIdx = (idx - 1 + skillButtons.length) % skillButtons.length;
+          skillButtons[prevIdx].focus();
+        } else if (e.key === 'Home') {
+          e.preventDefault();
+          skillButtons[0].focus();
+        } else if (e.key === 'End') {
+          e.preventDefault();
+          skillButtons[skillButtons.length - 1].focus();
+        }
+      });
+    });
+
+    // Initialize with first skill active
+    setActiveSkill(skillButtons[0]);
+  </script>
+</body>
+</html>
+
